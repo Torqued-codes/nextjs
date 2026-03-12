@@ -1,4 +1,7 @@
 import ExploreBtn from "@/components/ExploreBtn";
+import Eventcard from "@/components/Eventcard";
+import { events } from "@/lib/constants";
+
 const Page = () => {
   return (
     <section>
@@ -10,10 +13,10 @@ const Page = () => {
         <h3>Featured Events</h3>
 
         <ul className="events">
-          {[1,2,3,4,5].map((event) => (
-            <li key={event} className="event">
-              Event {event}
-            </li>
+          {events.map((event) => (
+              <li key={event.title}>
+                  <Eventcard {...event} />
+              </li>
           ))}
         </ul>
         
