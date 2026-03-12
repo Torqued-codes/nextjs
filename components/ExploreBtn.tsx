@@ -1,12 +1,16 @@
 'use client'
 
+import Image from "next/image"
+
 const ExploreBtn = () => {
     return (
-        <button type="button" id="explore-btn" className="mt-9 mx-auto" onClick={() => console.log('CLICK')}>ExploreBtn </button>  // use client if not used will give error
+        <button type="button" id="explore-btn" className="mt-9 mx-auto" onClick={() => console.log('CLICK')}>
             <a href="#events">
                 Explore Events
-                <Image src="/icons/arrow-down.svg" alt="arrow-down" width={19} height={19} />
+             <Image src="/icons/arrow-down.svg" alt="arrow-down" width={19} height={19} />
             </a>
+        </button>
     )
 }
-explore default ExploreBtn
+
+export default ExploreBtn
