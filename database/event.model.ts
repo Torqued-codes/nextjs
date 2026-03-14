@@ -1,6 +1,7 @@
-import mongoose, { Schema, model, models, Document } from 'mongoose';
+/* eslint-disable */
+
+import { Schema, model, models, Document } from 'mongoose';
  
-// TypeScript interface for Event document
 export interface IEvent extends Document {
   title: string;
   slug: string;
@@ -108,29 +109,18 @@ const EventSchema = new Schema<IEvent>(
     timestamps: true,
   }
 );
- 
-// Pre-save hook for slug generation and data normalization
-EventSchema.pre(
-  'save',
-  function (
-    this: mongoose.HydratedDocument<IEvent>,
-    next: mongoose.CallbackWithoutResultAndOptionalError
-  ) {
-    if (this.isModified('title') || this.isNew) {
-      this.slug = generateSlug(this.title);
-    }
- 
-    if (this.isModified('date')) {
-      this.date = normalizeDate(this.date);
-    }
- 
-    if (this.isModified('time')) {
-      this.time = normalizeTime(this.time);
-    }
- 
-    next();
+
+EventSchema.pre('save', function () {
+  if (this.isModified('title') || this.isNew) {
+    this.slug = generateSlug(this.title as string);
   }
-);
+  if (this.isModified('date')) {
+    this.date = normalizeDate(this.date as string);
+  }
+  if (this.isModified('time')) {
+    this.time = normalizeTime(this.time as string);
+  }
+});
  
 function generateSlug(title: string): string {
   return title
@@ -179,11 +169,11 @@ function normalizeTime(timeString: string): string {
   return `${hours.toString().padStart(2, '0')}:${minutes}`;
 }
  
-EventSchema.index({ slug: 1 }, { unique: true });
 EventSchema.index({ date: 1, mode: 1 });
  
 const Event = models.Event || model<IEvent>('Event', EventSchema);
  
 export default Event;
+
 
 
