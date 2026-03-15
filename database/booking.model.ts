@@ -1,7 +1,7 @@
-import mongoose, { Schema, model, models, Document, Types } from 'mongoose';
+/* eslint-disable */
+import { Schema, model, models, Document, Types } from 'mongoose';
 import Event from './event.model';
  
-// TypeScript interface for Booking document
 export interface IBooking extends Document {
   eventId: Types.ObjectId;
   email: string;
@@ -37,35 +37,18 @@ const BookingSchema = new Schema<IBooking>(
 );
  
 // Pre-save hook to validate event exists before creating booking
-BookingSchema.pre(
-  'save',
-  async function (
-    this: mongoose.HydratedDocument<IBooking>,
-    next: mongoose.CallbackWithoutResultAndOptionalError
-  ) {
-    if (this.isModified('eventId') || this.isNew) {
-      try {
-        const eventExists = await Event.findById(this.eventId).select('_id');
- 
-        if (!eventExists) {
-          const error = new Error(
-            `Event with ID ${this.eventId} does not exist`
-          );
-          error.name = 'ValidationError';
-          return next(error);
-        }
-      } catch {
-        const validationError = new Error(
-          'Invalid event ID format or database error'
-        );
-        validationError.name = 'ValidationError';
-        return next(validationError);
+BookingSchema.pre('save', async function () {
+  if (this.isModified('eventId') || this.isNew) {
+    try {
+      const eventExists = await Event.findById(this.eventId).select('_id');
+      if (!eventExists) {
+        throw new Error(`Event with ID ${this.eventId} does not exist`);
       }
+    } catch (e) {
+      throw new Error('Invalid event ID format or database error');
     }
- 
-    next();
   }
-);
+});
  
 BookingSchema.index({ eventId: 1 });
 BookingSchema.index({ eventId: 1, createdAt: -1 });
