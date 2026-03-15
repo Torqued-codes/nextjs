@@ -16,29 +16,35 @@ export async function POST(req: NextRequest) {
  
         const formData = await req.formData();
  
-        const file = formData.get('image') as File;
-        if (!file) {
+        const file = formData.get('image');
+ 
+        if (!file || typeof file === 'string') {
             return NextResponse.json(
                 { message: 'Image file is required' },
                 { status: 400 }
             );
         }
  
+        // Get tags and agenda as arrays
+        const tags = formData.getAll('tags') as string[];
+        const agenda = formData.getAll('agenda') as string[];
+ 
         // Convert file to base64
-        const arrayBuffer = await file.arrayBuffer();
+        const arrayBuffer = await (file as File).arrayBuffer();
         const base64String = Buffer.from(arrayBuffer).toString('base64');
-        const mimeType = file.type;
+        const mimeType = (file as File).type || 'image/png';
         const dataUri = `data:${mimeType};base64,${base64String}`;
  
-        // Upload using base64
+        // Upload to cloudinary
         const uploadResult = await cloudinary.uploader.upload(dataUri, {
-            folder: 'TorqEvent',
             resource_type: 'image',
+            folder: 'DevEvent',
         });
  
         const imageUrl = uploadResult.secure_url;
  
-        const eventData = {
+        // Create event with all fields
+        const createdEvent = await Event.create({
             title: formData.get('title') as string,
             description: formData.get('description') as string,
             overview: formData.get('overview') as string,
@@ -47,27 +53,22 @@ export async function POST(req: NextRequest) {
             location: formData.get('location') as string,
             date: formData.get('date') as string,
             time: formData.get('time') as string,
-            mode: formData.get('mode') as string,
+            mode: (formData.get('mode') as string)?.toLowerCase(),
             audience: formData.get('audience') as string,
-            agenda: formData.getAll('agenda') as string[],
+            agenda,
             organizer: formData.get('organizer') as string,
-            tags: formData.getAll('tags') as string[],
-        };
- 
-        const createdEvent = await Event.create(eventData);
+            tags,
+        });
  
         return NextResponse.json(
-            { message: 'Event created properly', event: createdEvent },
+            { message: 'Event created successfully', event: createdEvent },
             { status: 201 }
         );
  
     } catch (e) {
         console.error(e);
         return NextResponse.json(
-            {
-                message: 'Event Creation Didnt Work',
-                error: e instanceof Error ? e.message : 'Unknown',
-            },
+            { message: 'Event Creation Failed', error: e instanceof Error ? e.message : 'Unknown' },
             { status: 500 }
         );
     }
@@ -80,14 +81,14 @@ export async function GET() {
         const events = await Event.find().sort({ createdAt: -1 });
  
         return NextResponse.json(
-            { message: 'Event list done', events },
+            { message: 'Events fetched successfully', events },
             { status: 200 }
         );
  
     } catch (e) {
         return NextResponse.json(
-            { message: 'Event fetching didnt happen', error: e instanceof Error ? e.message : 'Unknown' },
-            { status: 400 }
+            { message: 'Event fetching failed', error: e instanceof Error ? e.message : 'Unknown' },
+            { status: 500 }
         );
     }
 }
