@@ -4,6 +4,8 @@ import { IEvent } from "@/database";
 import { getAllEvents } from "@/lib/actions/event.action";
 import { unstable_noStore as noStore } from "next/cache";
  
+export const dynamic = 'force-dynamic';
+ 
 const Page = async () => {
     noStore();
     const events: IEvent[] = await getAllEvents();
