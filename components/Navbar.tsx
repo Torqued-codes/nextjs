@@ -8,7 +8,7 @@ const Navbar = () => {
                 <Link href='/' className="logo">
                     <Image src="/icons/logo/png" alt="logo" width={24} height={24} />
 
-                <p>Dev Event</p>
+                <p>Torq Event</p>
                 </Link>
 
                 <ul>
