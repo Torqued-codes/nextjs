@@ -2,8 +2,10 @@ import ExploreBtn from "@/components/ExploreBtn";
 import Eventcard from "@/components/Eventcard";
 import { IEvent } from "@/database";
 import { getAllEvents } from "@/lib/actions/event.action";
+import { unstable_noStore as noStore } from "next/cache";
  
 const Page = async () => {
+    noStore();
     const events: IEvent[] = await getAllEvents();
  
     return (

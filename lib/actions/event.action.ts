@@ -2,8 +2,10 @@
  
 import Event from '@/database/event.model';
 import connectDB from "@/lib/mongodb";
+import { unstable_noStore as noStore } from "next/cache";
  
 export const getAllEvents = async () => {
+    noStore();
     try {
         await connectDB();
         const events = await Event.find().sort({ createdAt: -1 }).lean();
@@ -14,6 +16,7 @@ export const getAllEvents = async () => {
 }
  
 export const getEventBySlug = async (slug: string) => {
+    noStore();
     try {
         await connectDB();
         const event = await Event.findOne({ slug }).lean();
@@ -24,6 +27,7 @@ export const getEventBySlug = async (slug: string) => {
 }
  
 export const getSimilarEventsBySlug = async (slug: string) => {
+    noStore();
     try {
         await connectDB();
         const event = await Event.findOne({ slug });
@@ -38,4 +42,3 @@ export const getSimilarEventsBySlug = async (slug: string) => {
         return [];
     }
 }
- 
