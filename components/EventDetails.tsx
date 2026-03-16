@@ -1,12 +1,10 @@
 import React from 'react'
 import { notFound } from "next/navigation";
 import { IEvent } from "@/database";
-import { getSimilarEventsBySlug } from "@/lib/actions/event.action";
+import { getEventBySlug, getSimilarEventsBySlug } from "@/lib/actions/event.action";
 import Image from "next/image";
 import BookEvent from "@/components/BookEvent";
 import EventCard from "@/components/Eventcard";
- 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
  
 const EventDetailItem = ({ icon, alt, label }: { icon: string; alt: string; label: string; }) => (
     <div className="flex-row-gap-2 items-center">
@@ -37,29 +35,9 @@ const EventTags = ({ tags }: { tags: string[] }) => (
 const EventDetails = async ({ params }: { params: string }) => {
     const slug = params;
  
-    let event;
-    try {
-        const request = await fetch(`${BASE_URL}/api/events/${slug}`, {
-            next: { revalidate: 60 }
-        });
+    const event = await getEventBySlug(slug);
  
-        if (!request.ok) {
-            if (request.status === 404) {
-                return notFound();
-            }
-            throw new Error(`Failed to fetch event: ${request.statusText}`);
-        }
- 
-        const response = await request.json();
-        event = response.event;
- 
-        if (!event) {
-            return notFound();
-        }
-    } catch (error) {
-        console.error('Error fetching event:', error);
-        return notFound();
-    }
+    if (!event) return notFound();
  
     const { _id, description, image, overview, date, time, location, mode, agenda, audience, tags, organizer } = event;
  
@@ -77,7 +55,6 @@ const EventDetails = async ({ params }: { params: string }) => {
             </div>
  
             <div className="details">
-                {/* Left Side - Event Content */}
                 <div className="content">
                     <Image src={image} alt="Event Banner" width={800} height={800} className="banner" />
  
@@ -105,7 +82,6 @@ const EventDetails = async ({ params }: { params: string }) => {
                     <EventTags tags={tags} />
                 </div>
  
-                {/* Right Side - Booking Form */}
                 <aside className="booking">
                     <div className="signup-card">
                         <h2>Book Your Spot</h2>
@@ -116,7 +92,6 @@ const EventDetails = async ({ params }: { params: string }) => {
                         ) : (
                             <p className="text-sm">Be the first to book your spot!</p>
                         )}
- 
                         <BookEvent eventId={_id} slug={slug} />
                     </div>
                 </aside>
@@ -135,4 +110,3 @@ const EventDetails = async ({ params }: { params: string }) => {
 }
  
 export default EventDetails;
-
