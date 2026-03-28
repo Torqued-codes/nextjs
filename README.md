@@ -20,12 +20,27 @@ A full-stack web platform for discovering and booking tech events — hackathons
 
 <img width="1890" height="913" alt="image" src="https://github.com/user-attachments/assets/5cf66cf1-4ff4-4788-8d2a-8f7d39c82fa3" />
 
+
 ### Featured Events
+
+
+<img width="1889" height="908" alt="image" src="https://github.com/user-attachments/assets/fe8f2a1a-292d-4612-8990-b2560975d1b3" />
 
 ### Event Details
 
 
-### Available Events
+<img width="1888" height="862" alt="image" src="https://github.com/user-attachments/assets/13631189-a33f-4dfd-9b95-6937530d0013" />
+<img width="1891" height="704" alt="image" src="https://github.com/user-attachments/assets/dc25e96a-be0b-4455-91ef-3041e618469c" />
+
+
+### Similar Events
+
+
+<img width="1889" height="910" alt="image" src="https://github.com/user-attachments/assets/b8a4ceb1-bd14-42c5-8a2c-06d72cc60a4e" />
+
+
+---
+
 ## Tech Stack
 
 - **Framework** — Next.js 16 (App Router)
