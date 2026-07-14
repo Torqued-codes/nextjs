@@ -9,8 +9,10 @@ export const getAllEvents = async () => {
     try {
         await connectDB();
         const events = await Event.find().sort({ createdAt: -1 }).lean();
+        console.log('[getAllEvents] found', events.length, 'events');
         return JSON.parse(JSON.stringify(events));
-    } catch {
+    } catch (error) {
+        console.error('[getAllEvents] error:', error);
         return [];
     }
 }
@@ -20,8 +22,10 @@ export const getEventBySlug = async (slug: string) => {
     try {
         await connectDB();
         const event = await Event.findOne({ slug }).lean();
+        console.log('[getEventBySlug]', slug, event ? 'found' : 'NOT FOUND');
         return JSON.parse(JSON.stringify(event));
-    } catch {
+    } catch (error) {
+        console.error('[getEventBySlug] error:', error);
         return null;
     }
 }
@@ -38,7 +42,8 @@ export const getSimilarEventsBySlug = async (slug: string) => {
                 tags: { $in: event.tags }
             }).lean()
         ));
-    } catch {
+    } catch (error) {
+        console.error('[getSimilarEventsBySlug] error:', error);
         return [];
     }
 }
