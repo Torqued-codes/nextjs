@@ -1,5 +1,10 @@
 import mongoose from 'mongoose';
 import { unstable_noStore as noStore } from 'next/cache';
+import dns from 'node:dns';
+ 
+// Force a reliable public DNS resolver — Render's default resolver can
+// fail to resolve MongoDB Atlas SRV records (querySrv ENOTFOUND).
+dns.setServers(['8.8.8.8', '1.1.1.1']);
  
 type MongooseCache = {
   conn: typeof mongoose | null;
